@@ -8,7 +8,6 @@ RSpec.describe Guard::Yield do
 
   subject { described_class.new(options) }
 
-  let(:default_options) { described_class::Options::DEFAULTS }
   let(:options) { {} }
   let(:block) { instance_double(Proc) }
 
@@ -27,6 +26,13 @@ RSpec.describe Guard::Yield do
       it "passes the object" do
         expect(block).to receive(:call).with(object, :start)
         subject.start
+      end
+    end
+
+    context "with an unknown option" do
+      let(:options) { { foo: :bar } }
+      it "fails" do
+        expect { subject }.to raise_error(ArgumentError, "Unknown option: :foo")
       end
     end
   end
