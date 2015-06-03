@@ -35,6 +35,27 @@ RSpec.describe Guard::Yield do
         expect { subject }.to raise_error(ArgumentError, "Unknown option: :foo")
       end
     end
+
+    context "with a Guard::Plugin watchers option" do
+      let(:options) { { watchers: [] } }
+      it "fails" do
+        expect { subject }.to_not raise_error
+      end
+    end
+
+    context "with a Guard::Plugin group option" do
+      let(:options) { { group: [] } }
+      it "fails" do
+        expect { subject }.to_not raise_error
+      end
+    end
+
+    context "with a Guard::Plugin callbacks option" do
+      let(:options) { { callbacks: [] } }
+      it "fails" do
+        expect { subject }.to_not raise_error
+      end
+    end
   end
 
   describe "#start" do
