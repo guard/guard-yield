@@ -1,34 +1,140 @@
 # Guard::Yield
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/guard/yield`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Build Status](https://travis-ci.org/e3/guard-yield.png?branch=master)](https://travis-ci.org/e2/guard-yield)
+[![Gem Version](http://img.shields.io/gem/v/guard-yield.svg)](http://badge.fury.io/rb/guard-yield)
+e
 
-TODO: Delete this and the text above, and describe your gem
+A Guard pseudo-plugin to conveniently run *any* Ruby code - straight from your
+Guardfile (without writing your own plugin).
 
 ## Installation
 
-Add this line to your application's Gemfile:
+in your Gemfile:
 
 ```ruby
-gem 'guard-yield'
+group :development do
+  gem 'guard-yield'
+end
 ```
 
-And then execute:
+Install with:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
     $ gem install guard-yield
 
+
 ## Usage
 
-TODO: Write usage instructions here
+Add snippets to your `Guardfile` with:
 
-## Development
+    $ bundle exec guard init yield
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Then, edit/remove them and run:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+    $ bundle exec guard
+
+## Quick example
+
+```ruby
+  md5_summer = proc { |_, _, files| puts `md5sum #{files * ' '}` }
+  guard :yield, run_on_modifications: md5_summer do
+    watch('foo.rb')
+    watch('bar.rb')
+    watch('baz.rb')
+  end
+```
+
+Yes, you don't need to resort to hax with the `watch()` block or creating
+inline Guard plugins in your Guardfile. Especially for local one-shot pieces of
+code like this.
+
+## Tips
+
+Aside from supporting all the methods for Guard::Plugin:
+
+```
+:start
+:stop
+:run_all
+:reload
+:run_on_additions
+:run_on_modifications
+:run_on_removals
+:run_on_changes
+```
+
+there's a special `:object` option, that allows you to pass any object you like
+to *all* the methods.
+
+(Just check the logger example in the Guardfile).
+
+This means you can conveniently use any Ruby library inside your Guardfile -
+without writing a Guard plugin as a wrapper for it.
+
+Also, remember to use Guard's `throw(:task_has_failed)` to flag an error
+(otherwise Guard will disable your guard), e.g. :
+
+```ruby
+  my_syntax_checker = proc do |_, _, changes|
+    changes.each do |file|
+      system("ruby -c #{file}") || throw(:task_has_failed) # IMPORTANT!
+    end
+  end
+
+  guard :yield, run_on_modifications: &my_syntax_checker do
+    watch('foo.rb')
+    watch('bar.rb')
+  end
+```
+
+
+## FAQ
+
+> "Why not use the watch() block for running code?"
+
+1. That's not what it's for (you need the `return nil` hack at least)
+2. You don't have access to the guard object (even if it's your own)
+3. You can't pass data to the block (you just have the file)
+4. The dsl has it's own namespace - guard-yield side-steps that
+5. This cleanly separates rules (which can get complex) from behavior
+6. It really is just for substituting one change for another (not for code)
+
+Here's an example anyway (NOT RECOMMENDED!):
+
+```ruby
+# nil to prevent plugin for doing anything itself
+watch("foo.*") { |m| `cp #{m} #{m}.backup`; nil }
+```
+
+> "Why not use an inline Guard plugin inside the Guardfile?"
+
+Usually it's the Object-Oriented way to do things, and it's likely easier to
+extract into a gem.
+
+But if you don't want to create a full-blown gem, or you want the logic to be
+local, verbose and concise ... guard-yield will help.
+
+And as above - guard-yield allows you to prototype an interface to any Ruby
+library and use that directly in your Guardfile - and often with less code,
+classes and methods to get the job done.
+
+> "Why not just create a gem/lib for every task like that?"
+
+One reason is - you may quickly end up with too many gems to maintain (for no
+reason), while those gems will just be a thin, minimal front-end to a complex
+Ruby library.
+
+Basically it all boils down to how many options you want your guard plugin to
+handle - and how complex handling them is.
+
+Not every use case can be extracted into a nice generic gem useful for many
+people - that's why I created this gem.
+
+Have fun!
+
 
 ## Contributing
 
