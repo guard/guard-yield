@@ -10,11 +10,12 @@ end
 
 # Example 2: log all kinds of changes
 
+require 'logger'
 yield_options = {
-  object: Logger.new(STDERR), # passed to every other call
+  object: ::Logger.new(STDERR), # passed to every other call
 
   start: proc { |logger| logger.level = Logger::INFO },
-  stop: proc { |logger| logger.close },
+  stop: proc { |logger| logger.info "Guard::Yield - Done!" },
 
   run_on_modifications: proc { |log, _, files| log.info "!! #{files * ','}" },
   run_on_additions: proc { |log, _, files| log.warn "++ #{files * ','}" },
