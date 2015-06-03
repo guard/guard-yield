@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-describe Guard::Yield do
+RSpec.describe Guard::Yield do
   it 'has a version number' do
     expect(Guard::Yield::VERSION).not_to be nil
   end

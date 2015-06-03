@@ -1,7 +1,7 @@
+require "guard/compat/plugin"
 require "guard/yield/version"
 
 module Guard
-  module Yield
-    # Your code goes here...
+  class Yield < Plugin
   end
 end
