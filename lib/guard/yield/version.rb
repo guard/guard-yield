@@ -1,8 +1,5 @@
-require "guard/compat/plugin"
-require "guard/yield"
-
 module Guard
-  class Yield < Plugin
+  module YieldVersion
     VERSION = "0.1.0"
   end
 end

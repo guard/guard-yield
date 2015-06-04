@@ -5,7 +5,7 @@ require 'guard/yield/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "guard-yield"
-  spec.version       = Guard::Yield::VERSION
+  spec.version       = Guard::YieldVersion::VERSION
   spec.authors       = ["Cezary Baginski"]
   spec.email         = ["cezary@chronomantic.net"]
 
