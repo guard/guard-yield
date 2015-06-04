@@ -36,7 +36,27 @@ Then, edit/remove them and run:
 
     $ bundle exec guard
 
-## Quick example
+## Useful example
+
+Automatically building Docker images from a Dockerfile in Guard:
+
+```ruby
+run_docker = proc do
+  image = "my_image"
+  system("docker build -t #{image} .") || throw(:task_has_failed)
+end
+
+guard :yield, { :run_on_modifications => run_docker } do
+  watch(/^Dockerfile$/)
+end
+```
+
+(You could use the Docker API, `require 'docker'`, etc. but this is less work and nice output, and the task doesn't get fired if it fails).
+
+
+## Another example
+
+Show a list of md5sums whenever these files change
 
 ```ruby
   md5_summer = proc { |_, _, files| puts `md5sum #{files * ' '}` }
