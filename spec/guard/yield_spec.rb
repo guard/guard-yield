@@ -2,10 +2,6 @@ require 'guard/compat/test/helper'
 require 'guard/yield'
 
 RSpec.describe Guard::Yield do
-  it 'has a version number' do
-    expect(described_class::VERSION).not_to be nil
-  end
-
   subject { described_class.new(options) }
 
   let(:options) { {} }
