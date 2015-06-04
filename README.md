@@ -1,8 +1,7 @@
 # Guard::Yield
 
 [![Build Status](https://travis-ci.org/guard/guard-yield.png?branch=master)](https://travis-ci.org/guard/guard-yield)
-[![Gem Version](http://img.shields.io/gem/v/guard-yield.svg)](http://badge.fury.io/rb/guard-yield)
-
+[![Gem Version](https://badge.fury.io/rb/guard-yield.svg)](http://badge.fury.io/rb/guard-yield)
 
 A Guard pseudo-plugin to conveniently run *any* Ruby code - straight from your
 Guardfile (without writing your own plugin).
